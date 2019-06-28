@@ -1,3 +1,4 @@
+
 if(typeof module !== "undefined") {
 	module.exports = Client;
 	var WebSocket = require("ws");
@@ -7,6 +8,8 @@ if(typeof module !== "undefined") {
 } else {
 	this.Client = Client;
 }
+
+
 function mixin(obj1, obj2) {
 	for(var i in obj2) {
 		if(obj2.hasOwnProperty(i)) {
@@ -14,6 +17,8 @@ function mixin(obj1, obj2) {
 		}
 	}
 };
+
+
 function Client(uri, proxy) {
 	EventEmitter.call(this);
 	this.uri = uri || "ws://www.multiplayerpiano.com:443";
@@ -33,28 +38,38 @@ function Client(uri, proxy) {
 	this.noteBuffer = [];
 	this.noteBufferTime = 0;
 	this.noteFlushInterval = undefined;
+
 	this.bindEventListeners();
+
 	this.emit("status", "(Offline mode)");
 };
+
 mixin(Client.prototype, EventEmitter.prototype);
+
 Client.prototype.constructor = Client;
+
 Client.prototype.isSupported = function() {
 	return typeof WebSocket === "function";
 };
+
 Client.prototype.isConnected = function() {
 	return this.isSupported() && this.ws && this.ws.readyState === WebSocket.OPEN;
 };
+
 Client.prototype.isConnecting = function() {
 	return this.isSupported() && this.ws && this.ws.readyState === WebSocket.CONNECTING;
 };
+
 Client.prototype.start = function() {
 	this.canConnect = true;
 	this.connect();
 };
+
 Client.prototype.stop = function() {
 	this.canConnect = false;
 	this.ws.close();
 };
+
 Client.prototype.connect = function() {
 	if(!this.canConnect || !this.isSupported() || this.isConnected() || this.isConnecting())
 		return;
@@ -78,8 +93,10 @@ Client.prototype.connect = function() {
 		self.setParticipants([]);
 		clearInterval(self.pingInterval);
 		clearInterval(self.noteFlushInterval);
+
 		self.emit("disconnect");
 		self.emit("status", "Offline mode");
+
 		// reconnect!
 		if(self.connectionTime) {
 			self.connectionTime = undefined;
@@ -112,6 +129,7 @@ Client.prototype.connect = function() {
 				self.noteBuffer = [];
 			}
 		}, 200);
+
 		self.emit("connect");
 		self.emit("status", "Joining channel...");
 	});
@@ -129,6 +147,7 @@ Client.prototype.connect = function() {
 		}
 	});
 };
+
 Client.prototype.bindEventListeners = function() {
 	var self = this;
 	this.on("hi", function(msg) {
@@ -160,17 +179,21 @@ Client.prototype.bindEventListeners = function() {
 		self.removeParticipant(msg.p);
 	});
 };
+
 Client.prototype.send = function(raw) {
 	if(this.isConnected()) this.ws.send(raw);
 };
+
 Client.prototype.sendArray = function(arr) {
 	this.send(JSON.stringify(arr));
 };
+
 Client.prototype.setChannel = function(id, set) {
 	this.desiredChannelId = id || this.desiredChannelId || "lobby";
 	this.desiredChannelSettings = set || this.desiredChannelSettings || undefined;
 	this.sendArray([{m: "ch", _id: this.desiredChannelId, set: this.desiredChannelSettings}]);
 };
+
 Client.prototype.offlineChannelSettings = {
 	lobby: true,
 	visible: false,
@@ -178,20 +201,24 @@ Client.prototype.offlineChannelSettings = {
 	crownsolo: false,
 	color:"#ecfaed"
 };
+
 Client.prototype.getChannelSetting = function(key) {
 	if(!this.isConnected() || !this.channel || !this.channel.settings) {
 		return this.offlineChannelSettings[key];
-	}
+	} 
 	return this.channel.settings[key];
 };
+
 Client.prototype.offlineParticipant = {
 	_id: "",
 	name: "",
 	color: "#777"
 };
+
 Client.prototype.getOwnParticipant = function() {
 	return this.findParticipantById(this.participantId);
 };
+
 Client.prototype.setParticipants = function(ppl) {
 	// remove participants who left
 	for(var id in this.ppl) {
@@ -212,6 +239,7 @@ Client.prototype.setParticipants = function(ppl) {
 		this.participantUpdate(ppl[i]);
 	}
 };
+
 Client.prototype.countParticipants = function() {
 	var count = 0;
 	for(var i in this.ppl) {
@@ -219,6 +247,7 @@ Client.prototype.countParticipants = function() {
 	}
 	return count;
 };
+
 Client.prototype.participantUpdate = function(update) {
 	var part = this.ppl[update.id] || null;
 	if(part === null) {
@@ -233,6 +262,7 @@ Client.prototype.participantUpdate = function(update) {
 		if(update.name) part.name = update.name;
 	}
 };
+
 Client.prototype.removeParticipant = function(id) {
 	if(this.ppl.hasOwnProperty(id)) {
 		var part = this.ppl[id];
@@ -241,15 +271,19 @@ Client.prototype.removeParticipant = function(id) {
 		this.emit("count", this.countParticipants());
 	}
 };
+
 Client.prototype.findParticipantById = function(id) {
 	return this.ppl[id] || this.offlineParticipant;
 };
+
 Client.prototype.isOwner = function() {
 	return this.channel && this.channel.crown && this.channel.crown.participantId === this.participantId;
 };
+
 Client.prototype.preventsPlaying = function() {
 	return this.isConnected() && !this.isOwner() && this.getChannelSetting("crownsolo") === true;
 };
+
 Client.prototype.receiveServerTime = function(time, echo) {
 	var self = this;
 	var now = Date.now();
@@ -271,10 +305,12 @@ Client.prototype.receiveServerTime = function(time, echo) {
 		}
 	}, step_ms);
 	// smoothen
+
 	//this.serverTimeOffset = time - now;			// mostly time zone offset ... also the lags so todo smoothen this
 								// not smooth:
 	//if(echo) this.serverTimeOffset += echo - now;	// mostly round trip time offset
 };
+
 Client.prototype.startNote = function(note, vel) {
 	if(this.isConnected()) {
 		var vel = typeof vel === "undefined" ? undefined : +vel.toFixed(3);
@@ -286,6 +322,7 @@ Client.prototype.startNote = function(note, vel) {
 		}
 	}
 };
+
 Client.prototype.stopNote = function(note) {
 	if(this.isConnected()) {
 		if(!this.noteBufferTime) {
@@ -296,26 +333,37 @@ Client.prototype.stopNote = function(note) {
 		}
 	}
 };
+
+
+
 /* extended methods */
+
 Client.prototype.say = function (message) {
 	this.sendArray([{m: "a", message}]);
 };
+
 Client.prototype.userset = function (set) {
 	this.sendArray([{m: "userset", set}]);
 };
+
 Client.prototype.setName = function (name) {
 	this.userset({name});
 };
+
 Client.prototype.moveMouse = function (x, y) {
 	this.sendArray([{m: "m", x, y}]);
 };
+
 Client.prototype.kickBan = function (_id, ms) {
 	this.sendArray([{m: "kickban", _id, ms}]);
 };
+
 Client.prototype.chown = function (id) {
 	this.sendArray([{m: "chown", id}]);
 };
+
 Client.prototype.chset = function (set) {
 	this.sendArray([{m: "chset", set}]);
 };
+
 // ¯\_(ツ)_/¯
