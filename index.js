@@ -6,7 +6,7 @@ client.start();
 client.on("connect", () => (url, "connected"));
 client.on("disconnect", () => (url, "disconnected"));
 client.on('hi', () => {
-	client.setName('⚽')
+	client.setName('🏓')
 });
 
 function randomSign() {
@@ -27,11 +27,11 @@ let gravity = 1;
 let xVelocity = 1;
 let yVelocity = 2;
 let bounceY = 0.4;
-let bounceX = 0;
+let bounceX = 0.3;
 let scoreLeft = 0;
 let scoreRight = 0;
 let ellapsedTime = 0;
-let botname = "⚽";
+let botname = "🏓";
 foo = setInterval(() => {
 	ellapsedTime += 60;
 	if (ellapsedTime > 10000) {
