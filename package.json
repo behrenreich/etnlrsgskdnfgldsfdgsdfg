@@ -1,32 +1,28 @@
 {
-  "name": "",
-  "version": "",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \\\"Error: no test specified\\\" && exit 1"
-  },
+  "requires": true,
+  "lockfileVersion": 1,
   "dependencies": {
-    "anon64-mpp": "1.3.3",
-    "cleverbot-node": "0.3.11",
-    "discord-bot-webhook": "^1.0.4",
-    "discord.js": "^11.4.2",
-    "fs": "0.0.1-security",
-    "heroku-client": "^3.0.7",
-    "https-proxy-agent": "^2.2.1",
-    "lokijs": "1.5.1",
-    "midi-player-js": "^2.0.3",
-    "moment": "^2.24.0",
-    "mpp-client": "^0.2.1",
-    "mpp-client-xt": "latest",
-    "opusscript": "0.0.4",
-    "os": "0.1.1",
-    "pg": "7.4.0",
-    "process": "^0.11.10",
-    "readline": "^1.3.0",
-    "request": "^2.83.0",
-    "translate": "^1.0.0",
-    "ws": "3.3.1"
+    "async-limiter": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/async-limiter/-/async-limiter-1.0.0.tgz",
+      "integrity": "sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg=="
+    },
+    "mpp-client": {
+      "version": "0.2.1",
+      "resolved": "https://registry.npmjs.org/mpp-client/-/mpp-client-0.2.1.tgz",
+      "integrity": "sha512-IEWTBOXxZi4zlIVpheLbxnx6DJE008t4sJDRhXvHO9hTBuY30Goo1OyoYOmM1VaoMaz2asLS8dR7swGVe5nDZQ==",
+      "requires": {
+        "ws": "^7.0.1"
+      }
+    },
+    "ws": {
+      "version": "7.0.1",
+      "resolved": "https://registry.npmjs.org/ws/-/ws-7.0.1.tgz",
+      "integrity": "sha512-ILHfMbuqLJvnSgYXLgy4kMntroJpe8hT41dOVWM8bxRuw6TK4mgMp9VJUNsZTEc5Bh+Mbs0DJT4M0N+wBG9l9A==",
+      "requires": {
+        "async-limiter": "^1.0.0"
+      }
+    }
   }
 }
+
