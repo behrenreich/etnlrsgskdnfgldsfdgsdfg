@@ -1,0 +1,7 @@
+{
+  "name": "Soccer Bot",
+  "version": "0.1.0",
+  "devDependencies": {
+    "mpp-client-xt": "~1.2.0"
+  }
+}
