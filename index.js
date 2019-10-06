@@ -1,7 +1,7 @@
 var Client = require('./mpp-client-xt');
 var client = new Client;
 var url = Proxy
-client.setChannel('lobb');
+client.setChannel('lobby');
 client.start();
 client.on("connect", () => (url, "connected"));
 client.on("disconnect", () => (url, "disconnected"));
